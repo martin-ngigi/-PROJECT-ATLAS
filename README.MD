@@ -1,0 +1,50 @@
+## PROJECT ATLAS
+- Create requirements text file
+```
+python -m pip freeze > requirements.txt
+```
+
+- install requirements.txt
+```
+pip install -r requirements.txt
+```
+or
+```
+pip install -r /path/to/requirements.txt
+```
+
+- Create Admin
+```
+python manage.py createsuperuser
+```
+- credentials
+```
+username: admin
+email: admin@gmail.com
+password: 123456
+```
+
+- Create App
+```
+python manage.py startapp application
+```
+
+- Activate virtaul Enviroment in Windows
+```
+.venv\scripts\activate
+```
+- Activate virtaul Enviroment in Mac
+```
+source .venv/bin/activate
+```
+
+
+- Run server
+```
+python manage.py runserver
+```
+
+- Runnig migrations
+```
+python manage.py makemigrations
+```
