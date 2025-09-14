@@ -48,3 +48,7 @@ python manage.py runserver
 ```
 python manage.py makemigrations
 ```
+
+## Climate Data APIS:
+- World Banks (Documentation)[https://climateknowledgeportal.worldbank.org/download-data]
+- https://pypi.org/project/wbpy/
