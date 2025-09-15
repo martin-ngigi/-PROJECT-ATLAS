@@ -56,7 +56,7 @@ class APIClient:
                 timeout = self.timeout
             )
             response.raise_for_status()
-            logging.error(f"✅ SUCCESS: Request to {url} with status code {response.status_code}")
+            logging.info(f"✅ SUCCESS: Request to {url} with status code {response.status_code}")
             return response.json()
         except Timeout:
             logging.error(f"❌ Request to {url} timed out.")
