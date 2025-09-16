@@ -38,7 +38,14 @@ def get_monthly_avg_temperature(latitude, longitude, start_date, end_date, daily
     # Resample to monthly frequency and calculate the mean
     monthly_avg = df["temperature_2m_mean"].resample("M").mean()
 
-    # Format index as YYYY-MM and convert to dict
-    monthly_dict = monthly_avg.round(2).to_dict()
-    monthly_dict = {date.strftime("%Y-%m"): temp for date, temp in monthly_dict.items()}
+    #Group by year and create nested dictionary
+    monthly_dict = {}
+    for date, temp in monthly_avg.items():
+        year = date.year
+        month_str = date.strftime("%Y-%m")
+        temp_rounded = round(temp, 2)
+        if year not in monthly_dict:
+            monthly_dict[year] = {}
+        monthly_dict[year][month_str] = temp_rounded
+
     return monthly_dict
