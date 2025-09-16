@@ -52,3 +52,13 @@ python manage.py makemigrations
 ## Climate Data APIS:
 - World Banks (Documentation)[https://climateknowledgeportal.worldbank.org/download-data]
 - https://pypi.org/project/wbpy/
+- (National Center for Environmental Information)[https://www.ncei.noaa.gov/cdo-web/webservices/v2]
+
+## Free weather APIs
+```
+Visual Crossing	
+Tomorrow.io	
+Weatherbit
+Weatherstack
+AccuWeather
+```
