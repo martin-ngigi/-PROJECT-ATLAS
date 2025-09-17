@@ -25,7 +25,7 @@ class MonthlyWeatherView(APIView):
     def post(self, request):
         serializer = WeatherRequestSerializer(data=request.data)
         if not serializer.is_valid():
-            logging.error(f"❌ Error:s {serializer.errors}")
+            logging.error(f"❌ Error: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
             data = services.get_monthly_avg_temperature(**serializer.validated_data)
