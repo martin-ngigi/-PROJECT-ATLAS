@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from . import services
-from .serializers import WeatherRequestSerializer
+from .serializers import NCEIWeatherRequestSerializer
 import logging
 
 """
@@ -12,7 +12,7 @@ Don't forget to add token: "" as a header.
 
 class NCEIDailyWeatherView(APIView):
     def post(self, request):
-        serializer = WeatherRequestSerializer(data=request.data)
+        serializer = NCEIWeatherRequestSerializer(data=request.data)
         if not serializer.is_valid():
             logging.error(f"❌ Error: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -24,7 +24,7 @@ class NCEIDailyWeatherView(APIView):
         
 class NCEIMonthlyWeatherView(APIView):
     def post(self, request):
-        serializer = WeatherRequestSerializer(data=request.data)
+        serializer = NCEIWeatherRequestSerializer(data=request.data)
         if not serializer.is_valid():
             logging.error(f"❌ Error: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

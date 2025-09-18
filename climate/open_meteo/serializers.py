@@ -1,5 +1,5 @@
 from rest_framework import serializers
-class WeatherRequestSerializer(serializers.Serializer):
+class OpenMeteoWeatherRequestSerializer(serializers.Serializer):
     latitude = serializers.FloatField(required=True)
     longitude = serializers.FloatField(required=True)
     start_date = serializers.DateField(required=True)

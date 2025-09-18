@@ -2,7 +2,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 from . import services
-from .serializers import WeatherRequestSerializer
+from .serializers import OpenMeteoWeatherRequestSerializer
 import logging
 
 """
@@ -11,7 +11,7 @@ sample url = "https://archive-api.open-meteo.com/v1/archive?latitude=1.75&longit
 """
 class DailyWeatherView(APIView):
     def post(self, request):
-        serializer = WeatherRequestSerializer(data=request.data)
+        serializer = OpenMeteoWeatherRequestSerializer(data=request.data)
         if not serializer.is_valid():
             logging.error(f"❌ Error: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -23,7 +23,7 @@ class DailyWeatherView(APIView):
         
 class MonthlyWeatherView(APIView):
     def post(self, request):
-        serializer = WeatherRequestSerializer(data=request.data)
+        serializer = OpenMeteoWeatherRequestSerializer(data=request.data)
         if not serializer.is_valid():
             logging.error(f"❌ Error: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
