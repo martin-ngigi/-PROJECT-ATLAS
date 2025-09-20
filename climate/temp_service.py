@@ -2,6 +2,7 @@ import pandas as pd
 from .nasa import services as nasa_service
 from .ncei import services as ncei_service
 from .open_meteo import services as open_meteo_service
+from .models import ClimateTemperature
 
 def _normalize_to_df(source_name: str, data: dict) -> pd.DataFrame:
     """
@@ -37,20 +38,25 @@ def aggregare_monthly_avg_temperature(nasa_kwargs, ncei_kwargs, open_meteo_kwarg
     combined["mean"] = combined.mean(axis=1, skipna=True).round(2)
 
     # Save each row into DB
-    """
-    for date, row in combined.iterrows():
-        AggregatedClimateData.objects.create(
-            latitude=openmeteo_kwargs["latitude"],   # assuming same lat/lon for all
-            longitude=openmeteo_kwargs["longitude"],
-            start=openmeteo_kwargs["start_date"],
-            end=openmeteo_kwargs["end_date"],
-            parameter="T2M",
-            nasa_value=row.get("nasa"),
-            ncei_value=row.get("ncei"),
-            open_meteo_value=row.get("open_meteo"),
-            mean_value=row.get("mean")
-        )
-    """
+    #
+    # for date, row in combined.iterrows():
+    #     ClimateTemperature.objects.create(
+    #         longitude=open_meteo_kwargs["longitude"],
+    #         latitude=open_meteo_kwargs["latitude"],
+    #         year=0,# assuming same lat/lon for all
+    #         start_date=open_meteo_kwargs["start_date"],
+    #         end_date=open_meteo_kwargs["end_date"],
+    #         open_meteo_value=row.get("open_meteo"),
+    #         nasa_value=row.get("nasa"),
+    #         ncei_value=row.get("ncei"),
+    #         mean_value=row.get("mean"),
+    #         value=row.get("mean"),
+    #         measurement_unit = "T2M",
+    #         unit_standardized = "Celsius",
+    #         source = "aggregated",
+    #         aggregation_method = "mean",
+    #         country = ""
+    #     )
 
     # Return combined aggregated results as dict
     return combined.to_dict(orient="index")

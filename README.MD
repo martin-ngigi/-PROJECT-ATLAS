@@ -1,7 +1,7 @@
 ## PROJECT ATLAS
 - Create requirements text file
 ```
-python -m pip freeze > requirements.txt
+pip freeze > requirements.txt
 ```
 
 - install requirements.txt
