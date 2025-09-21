@@ -94,10 +94,40 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# sqlite3 DB
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+# MYSQL DB
+# DATABASES = {
+#     'default': {
+#         'NAME': 'atlas_db',
+#         'ENGINE': 'mysql.connector.django',   # 'django.db.backends.mysql'
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'HOST': 'localhost',
+#         'PORT': 3306,
+#         'OPTIONS': {
+#             'autocommit': True,
+#         },
+#     }
+# }
+
+# PostgreSQL database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'atlas_db',
+        # 'USER': 'atlas_user',
+        # 'PASSWORD': 'P@ssword@123',
+        'USER': 'postgres', # this is the superuser
+        'PASSWORD': '12345678', # this is the superuser password
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
