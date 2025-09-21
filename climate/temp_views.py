@@ -5,6 +5,7 @@ from . import temp_service
 from .ncei.serializers import NCEIWeatherRequestSerializer
 from .open_meteo.serializers import OpenMeteoWeatherRequestSerializer
 from .nasa.serializers import NASAWeatherRequestSerializer
+from .serializers import ClimateTemperatureSerializer
 import logging
 
 class AggregatedTemperatureView(APIView):
@@ -47,8 +48,15 @@ class AggregatedTemperatureView(APIView):
                 ncei_kwargs=ncei_serializer.validated_data,
                 open_meteo_kwargs=open_meteo_serializer.validated_data
             )
-            logging.info(f"✅ Temperature aggregated succuessfully.")
-            return Response(aggregated, status=status.HTTP_200_OK)
+
+            # Serialize each years separately
+            grouped = {}
+            for year_str, records in aggregated.items():
+                serializer = ClimateTemperatureSerializer(records, many=True)
+                grouped[year_str] = serializer.data
+
+            logging.info(f"✅ Temperature aggregated successfully.")
+            return Response(grouped, status=status.HTTP_200_OK)
         except Exception as e:
             logging.error(f"❌ Error: {str(e)}")
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

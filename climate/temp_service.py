@@ -56,9 +56,7 @@ def aggregare_monthly_avg_temperature(nasa_kwargs, ncei_kwargs, open_meteo_kwarg
             latitude=open_meteo_kwargs["latitude"],
             month=month,
             year=year,
-
-            #Fields to update if record exists or create if new
-            defaults={
+            defaults={  #Fields to update if record exists or create if new
                 'start_date': open_meteo_kwargs["start_date"],
                 'end_date': open_meteo_kwargs["end_date"],
                 'open_meteo_value': row.get("open_meteo"),
@@ -74,37 +72,7 @@ def aggregare_monthly_avg_temperature(nasa_kwargs, ncei_kwargs, open_meteo_kwarg
             }
         )
 
-        """   
-       ClimateTemperature.objects.create(
-            longitude=open_meteo_kwargs["longitude"],
-            latitude=open_meteo_kwargs["latitude"],
-            year=year,
-            start_date=open_meteo_kwargs["start_date"],
-            end_date=open_meteo_kwargs["end_date"],
-            open_meteo_value=row.get("open_meteo"),
-            nasa_value=row.get("nasa"),
-            ncei_value=row.get("ncei"),
-            mean_value=row.get("mean"),
-            value=row.get("mean"),
-            measurement_unit = "T2M",
-            unit_standardized = "Celsius",
-            source = "aggregated",
-            aggregation_method = "mean",
-            country = ""
-        )
-        """
-        logging.info(f"✅ SUCCESS: Created/Updated ClimateTemperature {created} successfully.")
-
-        # # Build nested result
-        # year_str = str(year)
-        # if year_str not in result:
-        #     result[year_str] = {}
-        # result[year_str][date] = {
-        #     "nasa": row.get("nasa"),
-        #     "open_meteo": row.get("open_meteo"),
-        #     # "ncei": row.get("ncei"),
-        #     "mean": row.get("mean")
-        # }
+        # logging.info(f"✅ SUCCESS: Created/Updated ClimateTemperature {created} successfully.")
 
         # Query database and return results grouped by year
         climate_records = ClimateTemperature.objects.filter(
@@ -118,32 +86,7 @@ def aggregare_monthly_avg_temperature(nasa_kwargs, ncei_kwargs, open_meteo_kwarg
         result = {}
         for record in climate_records:
             year_str = str(record.year)
-            month_str = f"{record.year}-{record.month:02d}"  # Format as "YYYY-MM"
-
-            if year_str not in result:
-                result[year_str] = {}
-
-            result[year_str][month_str] = {
-                "id": str(record.id),
-                "longitude": record.longitude,
-                "latitude": record.latitude,
-                "year": record.year,
-                "month": record.month,
-                "start_date": record.start_date.isoformat() if record.start_date else None,
-                "end_date": record.end_date.isoformat() if record.end_date else None,
-                "nasa_value": record.nasa_value,
-                "open_meteo_value": record.open_meteo_value,
-                "ncei_value": record.ncei_value,
-                "mean_value": record.mean_value,
-                "value": record.value,
-                "measurement_unit": record.measurement_unit,
-                "unit_standardized": record.unit_standardized,
-                "source": record.source,
-                "aggregation_method": record.aggregation_method,
-                "country": record.country,
-                "created_at": record.created_at.isoformat(),
-                "updated_at": record.updated_at.isoformat()
-            }
+            result.setdefault(year_str, []).append(record)
 
     # Return combined aggregated results as dict
     return result
