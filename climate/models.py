@@ -11,8 +11,8 @@ class ClimateTemperature(models.Model):
     latitude =  models.FloatField()
     month =  models.IntegerField(
         validators=[
-            MinValueValidator(12),
-            MaxValueValidator(0)
+            MinValueValidator(1),
+            MaxValueValidator(12)
         ],
         null=True,
         blank=True

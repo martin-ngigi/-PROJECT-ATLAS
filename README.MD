@@ -66,3 +66,11 @@ Weatherbit
 Weatherstack
 AccuWeather
 ```
+
+- Confirm table exists:
+```
+python manage.py dbshell
+.tables  -- (if SQLite)
+\dt      -- (if Postgres)
+show tables; -- (if MySQL)
+```
