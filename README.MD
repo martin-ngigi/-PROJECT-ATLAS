@@ -17,7 +17,7 @@ pip install -r /path/to/requirements.txt
 ```
 python manage.py createsuperuser
 ```
-- credentials
+- Sample Admin credentials
 ```
 username: admin
 email: admin@gmail.com
@@ -44,9 +44,13 @@ source .venv/bin/activate
 python manage.py runserver
 ```
 
-- Runnig migrations
+- Make migrations
 ```
 python manage.py makemigrations
+```
+- Run migrations
+```
+python manage.py migrate
 ```
 
 ## Climate Data APIS:

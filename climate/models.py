@@ -5,10 +5,18 @@ from  django.core.validators import MinValueValidator, MaxValueValidator
 
 class ClimateTemperature(models.Model):
     id = models.UUIDField(
-        primary_key=True, default=uuid.uuid5, editable=False, unique=True
+        primary_key=True, default=uuid.uuid4, editable=False, unique=True
     )
     longitude = models.FloatField()
     latitude =  models.FloatField()
+    month =  models.IntegerField(
+        validators=[
+            MinValueValidator(12),
+            MaxValueValidator(0)
+        ],
+        null=True,
+        blank=True
+    )
     year = models.IntegerField(
         validators=[
             MinValueValidator(1900),

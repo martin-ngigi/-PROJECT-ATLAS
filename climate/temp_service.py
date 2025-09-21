@@ -1,8 +1,11 @@
+import logging
+
 import pandas as pd
 from .nasa import services as nasa_service
 from .ncei import services as ncei_service
 from .open_meteo import services as open_meteo_service
 from .models import ClimateTemperature
+from datetime import datetime
 
 def _normalize_to_df(source_name: str, data: dict) -> pd.DataFrame:
     """
@@ -37,27 +40,72 @@ def aggregare_monthly_avg_temperature(nasa_kwargs, ncei_kwargs, open_meteo_kwarg
     # Compute row-wise mean across sources
     combined["mean"] = combined.mean(axis=1, skipna=True).round(2)
 
-    # Save each row into DB
-    #
-    # for date, row in combined.iterrows():
-    #     ClimateTemperature.objects.create(
-    #         longitude=open_meteo_kwargs["longitude"],
-    #         latitude=open_meteo_kwargs["latitude"],
-    #         year=0,# assuming same lat/lon for all
-    #         start_date=open_meteo_kwargs["start_date"],
-    #         end_date=open_meteo_kwargs["end_date"],
-    #         open_meteo_value=row.get("open_meteo"),
-    #         nasa_value=row.get("nasa"),
-    #         ncei_value=row.get("ncei"),
-    #         mean_value=row.get("mean"),
-    #         value=row.get("mean"),
-    #         measurement_unit = "T2M",
-    #         unit_standardized = "Celsius",
-    #         source = "aggregated",
-    #         aggregation_method = "mean",
-    #         country = ""
-    #     )
+    #Group by year and save each row to DB
+    result = {}
+    for date, row in combined.iterrows():
+
+        year = int(date.split("-")[0]) #Extract Year from "YYYY-MM"
+        month = int(date.split("-")[1])
+
+        #Create date object for the first day of the month
+        month_date = datetime(year, month, 1).date()
+
+        obj, created = ClimateTemperature.objects.update_or_create(
+            #Fields to check for existing record.
+            longitude=open_meteo_kwargs["longitude"],
+            latitude=open_meteo_kwargs["latitude"],
+            month=month,
+            year=year,
+
+            #Fields to update if record exists or create if new
+            defaults={
+                'start_date': open_meteo_kwargs["start_date"],
+                'end_date': open_meteo_kwargs["end_date"],
+                'open_meteo_value': row.get("open_meteo"),
+                'nasa_value': row.get("nasa"),
+                'ncei_value': row.get("ncei"),
+                'mean_value': row.get("mean"),
+                'value': row.get("mean"),
+                'measurement_unit': "T2M",
+                'unit_standardized': "Celsius",
+                'source': "aggregated",
+                'aggregation_method': "mean",
+                'country': ""
+            }
+        )
+
+        """   
+       ClimateTemperature.objects.create(
+            longitude=open_meteo_kwargs["longitude"],
+            latitude=open_meteo_kwargs["latitude"],
+            year=year,
+            start_date=open_meteo_kwargs["start_date"],
+            end_date=open_meteo_kwargs["end_date"],
+            open_meteo_value=row.get("open_meteo"),
+            nasa_value=row.get("nasa"),
+            ncei_value=row.get("ncei"),
+            mean_value=row.get("mean"),
+            value=row.get("mean"),
+            measurement_unit = "T2M",
+            unit_standardized = "Celsius",
+            source = "aggregated",
+            aggregation_method = "mean",
+            country = ""
+        )
+        """
+        logging.info(f"✅ SUCCESS: Created/Updated ClimateTemperature {created} successfully.")
+
+        # Build nested result
+        year_str = str(year)
+        if year_str not in result:
+            result[year_str] = {}
+        result[year_str][date] = {
+            "nasa": row.get("nasa"),
+            "open_meteo": row.get("open_meteo"),
+            # "ncei": row.get("ncei"),
+            "mean": row.get("mean")
+        }
 
     # Return combined aggregated results as dict
-    return combined.to_dict(orient="index")
+    return result
 
