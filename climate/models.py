@@ -1,11 +1,17 @@
 from django.db import models
 import uuid
 from  django.core.validators import MinValueValidator, MaxValueValidator
+from . import ClimateTypesEnum
 # Create your models here.
 
-class ClimateTemperature(models.Model):
+class Climate(models.Model):
     id = models.UUIDField(
         primary_key=True, default=uuid.uuid4, editable=False, unique=True
+    )
+    climate_type = models.CharField(
+        max_length=100,
+        choices=ClimateTypesEnum.ClimateTypes.choices(),
+        help_text="i.e. Temperature, Precipitation"
     )
     longitude = models.FloatField()
     latitude =  models.FloatField()
@@ -28,7 +34,6 @@ class ClimateTemperature(models.Model):
 
     open_meteo_value = models.FloatField(blank=True, null=True)
     nasa_value = models.FloatField(blank=True, null=True)
-    ncei_value = models.FloatField(blank=True, null=True)
 
     mean_value = models.FloatField(blank=True, null=True)
     value = models.FloatField(
@@ -56,7 +61,7 @@ class ClimateTemperature(models.Model):
     )
 
     class Meta:
-        db_table = "climate_temperature"
+        db_table = "climate"
         indexes = [
             models.Index(fields=["latitude", "longitude", "year" ])
         ]

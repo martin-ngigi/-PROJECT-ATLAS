@@ -1,10 +1,10 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import ClimateTemperature
+from .models import Climate
 
 # admin.site.register(ClimateTemperature)
-@admin.register(ClimateTemperature)
+@admin.register(Climate)
 class ClimateTemperatureAdmin(admin.ModelAdmin):
     # list_display = ("id", "year", "month", "latitude", "longitude", "mean_value", "created_at")
     list_filter = ("year", "month", "country", "source")
