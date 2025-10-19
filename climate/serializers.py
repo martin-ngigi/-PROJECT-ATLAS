@@ -31,4 +31,8 @@ class GeneralClimateSerializer(serializers.Serializer):
         input_formats=["%Y%m%d", "%Y-%m-%d"],
         format= ["%Y%m%d", "%Y-%m-%d"]
     )
-
+    measurement_unit = serializers.CharField(required=False)
+    unit_standardized = serializers.CharField(required=False)
+    aggregation_method = serializers.CharField(required=False)
+    country = serializers.CharField(required=False)
+    source = serializers.CharField(required=False)

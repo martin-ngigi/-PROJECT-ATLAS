@@ -14,7 +14,7 @@ class NCEIDailyWeatherView(APIView):
     def post(self, request):
         serializer = NCEIWeatherRequestSerializer(data=request.data)
         if not serializer.is_valid():
-            logging.error(f"❌ Error: {serializer.errors}")
+            logging.error(f"❌ Error NCEIDailyWeatherView: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
             data = services.get_daily_weather(**serializer.validated_data)
@@ -26,7 +26,7 @@ class NCEIMonthlyWeatherView(APIView):
     def post(self, request):
         serializer = NCEIWeatherRequestSerializer(data=request.data)
         if not serializer.is_valid():
-            logging.error(f"❌ Error: {serializer.errors}")
+            logging.error(f"❌ Error NCEIMonthlyWeatherView: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
             data = services.get_monthly_avg_temperature(**serializer.validated_data)

@@ -13,7 +13,7 @@ class DailyWeatherView(APIView):
     def post(self, request):
         serializer = OpenMeteoWeatherRequestSerializer(data=request.data)
         if not serializer.is_valid():
-            logging.error(f"❌ Error: {serializer.errors}")
+            logging.error(f"❌ Error DailyWeatherView: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
             data = services.get_daily_weather(**serializer.validated_data)
@@ -25,7 +25,7 @@ class MonthlyWeatherView(APIView):
     def post(self, request):
         serializer = OpenMeteoWeatherRequestSerializer(data=request.data)
         if not serializer.is_valid():
-            logging.error(f"❌ Error: {serializer.errors}")
+            logging.error(f"❌ Error MonthlyWeatherView: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
             data = services.get_monthly_avg_temperature(**serializer.validated_data)

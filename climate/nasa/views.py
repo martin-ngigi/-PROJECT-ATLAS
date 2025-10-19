@@ -13,7 +13,7 @@ class NASADailyTemperatureView(APIView):
     def post(self, request):
         serializer = NASAWeatherRequestSerializer(data=request.data)
         if not serializer.is_valid():
-            logging.error(f"❌ Error: {serializer.errors}")
+            logging.error(f"❌ Error NASADailyTemperatureView: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
             data = services.get_monthly_temperature(**serializer.validated_data)
@@ -25,7 +25,7 @@ class NASAMonthlyTemperatureView(APIView):
     def post(self, request):
         serializer = NASAWeatherRequestSerializer(data=request.data)
         if not serializer.is_valid():
-            logging.error(f"❌ Error: {serializer.errors}")
+            logging.error(f"❌ Error NASAMonthlyTemperatureView: {serializer.errors}")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
             data = services.get_monthly_avg_temperature(**serializer.validated_data)

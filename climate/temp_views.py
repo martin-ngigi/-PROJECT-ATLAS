@@ -28,10 +28,9 @@ class AggregatedTemperatureView(APIView):
         # ncei_valid = ncei_serializer.is_valid()
         nasa_valid = nasa_serializer.is_valid()
 
-
         if not (open_meteo_valid and nasa_valid and general_valid):
             logging.error(
-                f"❌ Errors: "
+                f"❌ Errors AggregatedTemperatureView: "
                 f"general={general_serializer.errors}, "
                 f"open_meteo={open_meteo_serializer.errors}, "
                 # f"ncei={ncei_serializer.errors}, "
@@ -48,8 +47,16 @@ class AggregatedTemperatureView(APIView):
             )
         
         try:
+            # ✅ Append default values to general_kwargs if missing
+            general_kwargs = general_serializer.validated_data
+            general_kwargs.setdefault("measurement_unit", "T2M")
+            general_kwargs.setdefault("unit_standardized", "Celsius")
+            general_kwargs.setdefault("source", "aggregated")
+            general_kwargs.setdefault("aggregation_method", "mean")
+            general_kwargs.setdefault("country", "KE")
+
             aggregated = temp_service.aggregare_monthly_avg_temperature(
-                general_kwargs=general_serializer.validated_data,
+                general_kwargs=general_kwargs,
                 nasa_kwargs=nasa_serializer.validated_data,
                 # ncei_kwargs=ncei_serializer.validated_data,
                 open_meteo_kwargs=open_meteo_serializer.validated_data
@@ -64,5 +71,5 @@ class AggregatedTemperatureView(APIView):
             logging.info(f"✅ Temperature aggregated successfully.")
             return Response(grouped, status=status.HTTP_200_OK)
         except Exception as e:
-            logging.error(f"❌ Error: {str(e)}")
+            logging.error(f"❌ Error AggregatedTemperatureView: {str(e)}")
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
