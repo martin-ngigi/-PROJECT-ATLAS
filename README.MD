@@ -74,3 +74,12 @@ python manage.py dbshell
 \dt      -- (if Postgres)
 show tables; -- (if MySQL)
 ```
+
+- Certificate issue:
+```
+open "/Applications/Python 3.13/Install Certificates.command"
+```
+- Python Version: 
+```
+Python 3.14.0
+```
