@@ -1,6 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+
+import utils.country_service
 from . import temp_service
 from .ncei.serializers import NCEIWeatherRequestSerializer
 from .open_meteo.serializers import OpenMeteoWeatherRequestSerializer
@@ -49,11 +51,17 @@ class AggregatedTemperatureView(APIView):
         try:
             # ✅ Append default values to general_kwargs if missing
             general_kwargs = general_serializer.validated_data
+
+            country_details = utils.country_service.get_country_details(general_kwargs["latitude"], general_kwargs["longitude"])
+            country_code = country_details["countryCode"]
+            country_name = country_details["countryName"]
+
             general_kwargs.setdefault("measurement_unit", "T2M")
             general_kwargs.setdefault("unit_standardized", "Celsius")
             general_kwargs.setdefault("source", "aggregated")
             general_kwargs.setdefault("aggregation_method", "mean")
-            general_kwargs.setdefault("country", "KE")
+            general_kwargs.setdefault("country_name", country_name)
+            general_kwargs.setdefault("country_code", country_code)
 
             aggregated = temp_service.aggregare_monthly_avg_temperature(
                 general_kwargs=general_kwargs,

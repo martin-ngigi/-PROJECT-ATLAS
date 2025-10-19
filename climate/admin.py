@@ -7,8 +7,8 @@ from .models import Climate
 @admin.register(Climate)
 class ClimateTemperatureAdmin(admin.ModelAdmin):
     # list_display = ("id", "year", "month", "latitude", "longitude", "mean_value", "created_at")
-    list_filter = ("year", "month", "country", "source")
-    search_fields = ("latitude", "longitude", "country")
+    list_filter = ("year", "month", "country_name", "country_code", "source")
+    search_fields = ("latitude", "longitude", "country_name", "country_code")
 
 
     def get_list_display(self, request):

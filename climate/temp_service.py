@@ -69,7 +69,8 @@ def aggregare_monthly_avg_temperature(general_kwargs, nasa_kwargs, open_meteo_kw
                 'unit_standardized': general_kwargs["unit_standardized"], #"Celsius",
                 'source': general_kwargs["source"], # "aggregated",
                 'aggregation_method': general_kwargs["aggregation_method"], # "mean",
-                'country': general_kwargs["country"]
+                'country_name': general_kwargs["country_name"],
+                'country_code': general_kwargs["country_code"]
             }
         )
 

@@ -47,7 +47,8 @@ class Climate(models.Model):
     source = models.CharField(max_length=50, default="aggregated")
     aggregation_method = models.CharField(max_length=50, default="mean")
 
-    country = models.CharField(max_length=100, blank=True, null=True)
+    country_name = models.CharField(max_length=100, blank=True, null=True)
+    country_code = models.CharField(max_length=100, blank=True, null=True)
 
     created_at = models.DateTimeField(
         auto_now_add=True,
