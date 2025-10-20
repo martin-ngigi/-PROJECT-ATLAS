@@ -94,6 +94,7 @@ class AggregatedTemperatureView(APIView):
 
             # Serialize each years separately
             grouped = {}
+            logging.info(f"AggregatedTemperatureView: aggregated count ={aggregated.items()}")
             for year_str, records in aggregated.items():
                 serializer = ClimateTemperatureSerializer(records, many=True)
                 grouped[year_str] = serializer.data

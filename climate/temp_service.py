@@ -42,6 +42,7 @@ def aggregare_monthly_avg_temperature(general_kwargs, nasa_kwargs, open_meteo_kw
 
     #Group by year and save each row to DB
     result = {}
+    climate_records = []
     for date, row in combined.iterrows():
 
         year = int(date.split("-")[0]) #Extract Year from "YYYY-MM"
@@ -79,10 +80,10 @@ def aggregare_monthly_avg_temperature(general_kwargs, nasa_kwargs, open_meteo_kw
         # Query database and return results grouped by year
         climate_records = Climate.objects.filter(
             climate_type=general_kwargs["climate_type"],
-            longitude=open_meteo_kwargs["longitude"],
-            latitude=open_meteo_kwargs["latitude"],
-            start_date=open_meteo_kwargs["start_date"],
-            end_date=open_meteo_kwargs["end_date"]
+            longitude=general_kwargs["longitude"],
+            latitude=general_kwargs["latitude"],
+            start_date=general_kwargs["start_date"],
+            end_date=general_kwargs["end_date"]
         ).order_by('year', 'month')
 
         # Group results by year
@@ -92,5 +93,6 @@ def aggregare_monthly_avg_temperature(general_kwargs, nasa_kwargs, open_meteo_kw
             result.setdefault(year_str, []).append(record)
 
     # Return combined aggregated results as dict
+    logging.info(f"Climate {general_kwargs['climate_type']}, count is {len(climate_records)}")
     return result
 
