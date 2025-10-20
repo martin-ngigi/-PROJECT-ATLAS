@@ -75,6 +75,7 @@ class AggregatedTemperatureView(APIView):
             for year_str, records in aggregated.items():
                 serializer = ClimateTemperatureSerializer(records, many=True)
                 grouped[year_str] = serializer.data
+                return Response(serializer.data, status=status.HTTP_200_OK)
 
             logging.info(f"✅ Temperature aggregated successfully.")
             return Response(grouped, status=status.HTTP_200_OK)
