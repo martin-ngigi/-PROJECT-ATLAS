@@ -3,10 +3,11 @@ from rest_framework.response import Response
 from rest_framework import status
 
 import utils.country_service
+from utils.date_formater import convert_date_format
 from . import temp_service
 from .ncei.serializers import NCEIWeatherRequestSerializer
-from .open_meteo.serializers import OpenMeteoWeatherRequestSerializer
-from .nasa.serializers import NASAWeatherRequestSerializer
+from .open_meteo.serializers import OpenMeteoWeatherRequestSerializer, GeneralOpenMeteoWeatherRequestSerializer
+from .nasa.serializers import NASAWeatherRequestSerializer, GeneralNASAWeatherRequestSerializer
 from .serializers import ClimateTemperatureSerializer, GeneralClimateSerializer
 import logging
 
@@ -20,9 +21,9 @@ class AggregatedTemperatureView(APIView):
 
         # Validate each serializer with its nested data
         general_serializer = GeneralClimateSerializer(data=general)
-        open_meteo_serializer = OpenMeteoWeatherRequestSerializer(data=open_meteo_data)
+        open_meteo_serializer = GeneralOpenMeteoWeatherRequestSerializer(data=open_meteo_data)
         # ncei_serializer = NCEIWeatherRequestSerializer(data=ncei_data)
-        nasa_serializer = NASAWeatherRequestSerializer(data=nasa_data)
+        nasa_serializer = GeneralNASAWeatherRequestSerializer(data=nasa_data)
 
         # Validate each serializer explicitly
         general_valid = general_serializer.is_valid()
@@ -49,8 +50,29 @@ class AggregatedTemperatureView(APIView):
             )
         
         try:
-            # ✅ Append default values to general_kwargs if missing
             general_kwargs = general_serializer.validated_data
+            open_meteo_validated_data = open_meteo_serializer.validated_data
+            nasa_validated_data = nasa_serializer.validated_data
+
+            # Define all default general kwargs in a single map
+            open_meteo_general_values = {
+                "longitude": general_kwargs["longitude"],
+                "latitude": general_kwargs["longitude"],
+                "start_date": general_kwargs["start_date"],
+                "end_date": general_kwargs["end_date"],
+            }
+
+            nasa_general_values = {
+                "longitude": general_kwargs["longitude"],
+                "latitude": general_kwargs["longitude"],
+                "start": convert_date_format(str(general_kwargs["start_date"])),  #.replace("-", ""),
+                "end": convert_date_format(str(general_kwargs["end_date"])) #.replace("-", ""),
+            }
+
+            # Merge defaults with validated data — validated data takes priority
+            open_meteo_kwargs = {**open_meteo_general_values, **open_meteo_validated_data}
+            nasa_kwargs = {**nasa_general_values, **nasa_validated_data}
+
 
             country_details = utils.country_service.get_country_details(general_kwargs["latitude"], general_kwargs["longitude"])
             country_code = country_details["countryCode"]
@@ -65,9 +87,9 @@ class AggregatedTemperatureView(APIView):
 
             aggregated = temp_service.aggregare_monthly_avg_temperature(
                 general_kwargs=general_kwargs,
-                nasa_kwargs=nasa_serializer.validated_data,
+                nasa_kwargs=nasa_kwargs,
                 # ncei_kwargs=ncei_serializer.validated_data,
-                open_meteo_kwargs=open_meteo_serializer.validated_data
+                open_meteo_kwargs=open_meteo_kwargs
             )
 
             # Serialize each years separately

@@ -14,3 +14,8 @@ class NASAWeatherRequestSerializer(serializers.Serializer):
         data["start"] = data["start"].strftime("%Y%m%d")
         data["end"] = data["end"].strftime("%Y%m%d")
         return data
+
+class GeneralNASAWeatherRequestSerializer(serializers.Serializer):
+    parameters = serializers.CharField(required=False, default="T2M,T2M_MAX,T2M_MIN")
+    community = serializers.CharField(required=False, default="AG") #AG (Agroclimatology - agricultural), RE (Renewable Energy - renewable energy), SB (Sustainable Infrastructure - Sustainable Buildings)
+    format = serializers.CharField(required=False, default="JSON")
