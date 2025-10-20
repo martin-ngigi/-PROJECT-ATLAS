@@ -48,9 +48,6 @@ def aggregare_monthly_avg_temperature(general_kwargs, nasa_kwargs, open_meteo_kw
         year = int(date.split("-")[0]) #Extract Year from "YYYY-MM"
         month = int(date.split("-")[1])
 
-        #Create date object for the first day of the month
-        month_date = datetime(year, month, 1).date()
-
         obj, created = Climate.objects.update_or_create(
             #Fields to check for existing record.
             climate_type=general_kwargs["climate_type"],
@@ -77,22 +74,15 @@ def aggregare_monthly_avg_temperature(general_kwargs, nasa_kwargs, open_meteo_kw
 
         # logging.info(f"✅ SUCCESS: Created/Updated ClimateTemperature {created} successfully.")
 
-        # Query database and return results grouped by year
-        climate_records = Climate.objects.filter(
-            climate_type=general_kwargs["climate_type"],
-            longitude=general_kwargs["longitude"],
-            latitude=general_kwargs["latitude"],
-            start_date=general_kwargs["start_date"],
-            end_date=general_kwargs["end_date"]
-        ).order_by('year', 'month')
+    # Query database
+    climate_records = Climate.objects.filter(
+        climate_type=general_kwargs["climate_type"],
+        longitude=general_kwargs["longitude"],
+        latitude=general_kwargs["latitude"],
+        start_date=general_kwargs["start_date"],
+        end_date=general_kwargs["end_date"]
+    ).order_by('year', 'month')
 
-        # Group results by year
-        result = {}
-        for record in climate_records:
-            year_str = str(record.year)
-            result.setdefault(year_str, []).append(record)
-
-    # Return combined aggregated results as dict
     logging.info(f"Climate {general_kwargs['climate_type']}, count is {len(climate_records)}")
-    return result
+    return climate_records
 

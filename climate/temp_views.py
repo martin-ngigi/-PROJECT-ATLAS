@@ -92,16 +92,10 @@ class AggregatedTemperatureView(APIView):
                 open_meteo_kwargs=open_meteo_kwargs
             )
 
-            # Serialize each years separately
-            grouped = {}
-            logging.info(f"AggregatedTemperatureView: aggregated count ={aggregated.items()}")
-            for year_str, records in aggregated.items():
-                serializer = ClimateTemperatureSerializer(records, many=True)
-                grouped[year_str] = serializer.data
-                return Response(serializer.data, status=status.HTTP_200_OK)
+            logging.info(f"AggregatedTemperatureView: aggregated count ={len(aggregated)}")
+            serializer = ClimateTemperatureSerializer(aggregated, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
-            logging.info(f"✅ Temperature aggregated successfully.")
-            return Response(grouped, status=status.HTTP_200_OK)
         except Exception as e:
             logging.error(f"❌ Error AggregatedTemperatureView: {str(e)}")
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
