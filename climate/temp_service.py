@@ -15,7 +15,7 @@ def _normalize_to_df(source_name: str, data: dict) -> pd.DataFrame:
     for year, months in data.items():
         for month, value in months.items():
             records.append({"date": month, source_name: value})
-        return pd.DataFrame(records).set_index("date")
+    return pd.DataFrame(records).set_index("date")
     
 def aggregare_monthly_avg_temperature(general_kwargs, nasa_kwargs, open_meteo_kwargs):
     """
